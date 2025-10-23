@@ -1,4 +1,4 @@
-# projet_web_polytech_4A
+# projet_web_polytech_4A: Le Codex Stygien
 projet web pour 4A polytech
 
 il faut 3 pages web (accueil, liste talent, génération build) <br>
