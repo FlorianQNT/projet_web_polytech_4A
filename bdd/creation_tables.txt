@@ -1,0 +1,132 @@
+CREATE TABLE zeus_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE athena_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE artemis_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE poseidon_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE aphrodite_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE ares_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE dionysos_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE demeter_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE hermes_boon (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Rareté VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE arme (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255)
+);
+
+CREATE TABLE duo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Description TEXT,
+    Image VARCHAR(255),
+    PrérequisA TEXT,
+    PrérequisB TEXT,
+    PrérequisX TEXT
+);
+
+CREATE TABLE marteau (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Type VARCHAR(100),
+    Description TEXT,
+    Image VARCHAR(255),
+    Prérequis TEXT
+);
+
+CREATE TABLE mirroir_face (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Ligne INT,
+    Description TEXT,
+    Image VARCHAR(255)
+);
+
+CREATE TABLE mirroir_cache (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(255),
+    Ligne INT,
+    Description TEXT,
+    Image VARCHAR(255)
+);
