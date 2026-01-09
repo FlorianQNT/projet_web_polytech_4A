@@ -120,7 +120,6 @@ CREATE TABLE mirroir_face (
     Nom VARCHAR(255),
     Ligne INT,
     Description TEXT,
-    Image VARCHAR(255)
 );
 
 CREATE TABLE mirroir_cache (
@@ -128,5 +127,4 @@ CREATE TABLE mirroir_cache (
     Nom VARCHAR(255),
     Ligne INT,
     Description TEXT,
-    Image VARCHAR(255)
 );
