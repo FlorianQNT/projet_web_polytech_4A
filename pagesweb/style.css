@@ -1,0 +1,220 @@
+:root {
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --accent-color: #d4af37; /* Or */
+    --danger-color: #cf6679; /* Rouge */
+    --success-color: #4caf50; /* Vert */
+    --rare-color: #a3d1ff;   /* Bleu (Marteaux/Spécial) */
+    --legendary-color: #ff9d00;
+    --duo-color: #ccff00;
+    --mirror-color: #a67aff; /* Violet pour le Miroir */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+    padding-top: 40px;
+}
+
+h1, h2 { margin: 0 0 10px 0; color: var(--accent-color); }
+a { text-decoration: none; color: inherit; }
+
+/* --- HEADER & NAVIGATION --- */
+.back-home {
+    position: absolute; top: 10px; left: 20px; color: #888;
+    font-size: 0.9em; z-index: 100;
+}
+.back-home:hover { color: #fff; }
+
+#loader {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+    color: white; display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+
+/* --- SÉLECTION DE L'ARME --- */
+.weapon-section {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.weapon-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+select {
+    padding: 10px;
+    background: var(--card-bg);
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-size: 1em;
+    min-width: 200px;
+}
+
+.aspect-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+    display: none; 
+}
+.aspect-selection-grid.visible { display: grid; }
+
+.aspect-card {
+    background: var(--card-bg);
+    border: 1px solid #444;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    transition: 0.2s;
+}
+.aspect-card:hover { transform: translateY(-3px); border-color: var(--rare-color); }
+.aspect-card.selected { border: 2px solid var(--rare-color); background: #2a3a4a; }
+.aspect-card img {
+    width: 60px; height: 60px; border-radius: 5px; margin-bottom: 5px; object-fit: cover;
+}
+
+/* --- LAYOUT PRINCIPAL --- */
+.container { display: flex; flex: 1; gap: 20px; overflow: hidden; }
+
+.selection-area {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+/* --- ONGLETS DES DIEUX --- */
+.god-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+
+.god-btn {
+    background: var(--card-bg);
+    border: 1px solid #555;
+    color: white;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: capitalize;
+    transition: all 0.2s;
+}
+.god-btn:hover { background: #444; }
+.god-btn.active { background: var(--accent-color); color: black; font-weight: bold; border-color: var(--accent-color); }
+
+.god-btn.special-tab { border-color: var(--rare-color); color: var(--rare-color); }
+.god-btn.special-tab.active { background: var(--rare-color); color: #000; }
+
+/* --- GRILLE DES BIENFAITS --- */
+.boon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.boon-card {
+    background: var(--card-bg);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+/* ÉTAT VEROUILLÉ */
+.boon-card.locked {
+    opacity: 0.5;
+    filter: grayscale(0.8);
+    cursor: not-allowed;
+    border-style: dashed;
+}
+.boon-card.locked:hover { transform: none; border-color: #444; }
+.boon-card:not(.locked):hover { border-color: var(--accent-color); transform: translateY(-2px); }
+
+/* LÉGENDAIRE & DUO */
+.boon-card.legendary { border: 1px solid var(--legendary-color); box-shadow: 0 0 5px rgba(255, 157, 0, 0.1); }
+.boon-card.legendary .boon-name { color: var(--legendary-color); }
+
+.boon-card.duo { border: 1px solid var(--duo-color); box-shadow: 0 0 5px rgba(204, 255, 0, 0.1); }
+.boon-card.duo .boon-name { color: var(--duo-color); }
+
+.boon-card img { width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-bottom: 8px; background: #000; }
+.boon-name { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; }
+.boon-type { font-size: 0.75em; color: #aaa; margin-bottom: 5px; }
+.boon-desc { font-size: 0.7em; color: #888; margin-top: 5px; display: none; }
+.boon-card:hover .boon-desc { display: block; }
+
+/* --- PRÉREQUIS --- */
+.prereq-list {
+    font-size: 0.7em;
+    margin-top: 5px;
+    width: 100%;
+    text-align: left;
+    background: rgba(0,0,0,0.3);
+    padding: 4px;
+    border-radius: 4px;
+}
+.prereq-item { display: block; }
+.prereq-item.missing { color: var(--danger-color); }
+.prereq-item.met { color: var(--success-color); }
+.prereq-item::before { content: "• "; }
+
+/* --- ZONE DU BUILD (DROITE) --- */
+.build-area {
+    flex: 1;
+    background: #111;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.build-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333;
+}
+
+.counter.full { color: var(--danger-color); }
+
+.selected-list { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.selected-item {
+    display: flex; align-items: center; background: #2d2d2d; padding: 8px;
+    border-radius: 4px; border-left: 4px solid var(--accent-color); cursor: pointer;
+}
+
+.selected-item.legendary { border-left-color: var(--legendary-color) !important; background: #3a2a1a; }
+.selected-item.legendary div div:first-child { color: var(--legendary-color); }
+
+.selected-item.duo { border-left-color: var(--duo-color) !important; background: #2a2f1a; }
+.selected-item.duo div div:first-child { color: var(--duo-color); }
+
+.selected-item:hover { background: #3d3333; border-left-color: var(--danger-color) !important; }
+.selected-item img { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; }
