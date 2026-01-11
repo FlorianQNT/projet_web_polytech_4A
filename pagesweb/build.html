@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créateur de Build - Hades</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --accent-color: #d4af37;
+            --danger-color: #cf6679;
+            --success-color: #4caf50;
+            --rare-color: #a3d1ff; 
+            --legendary-color: #ff9d00;
+            --duo-color: #ccff00; /* Couleur pour les Duos */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+            padding-top: 40px;
+        }
+
+        h1, h2 { margin: 0 0 10px 0; color: var(--accent-color); }
+
+        /* --- SÉLECTION DE L'ARME --- */
+        .weapon-section {
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .weapon-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        select {
+            padding: 10px;
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 1em;
+            min-width: 200px;
+        }
+
+        .aspect-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+            display: none; 
+        }
+        
+        .aspect-selection-grid.visible { display: grid; }
+
+        .aspect-card {
+            background: var(--card-bg);
+            border: 1px solid #444;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .aspect-card:hover { transform: translateY(-3px); border-color: var(--rare-color); }
+        .aspect-card.selected { border: 2px solid var(--rare-color); background: #2a3a4a; }
+        
+        .aspect-card img {
+            width: 60px; height: 60px; border-radius: 5px; margin-bottom: 5px; object-fit: cover;
+        }
+
+        /* --- LAYOUT PRINCIPAL --- */
+        .container { display: flex; flex: 1; gap: 20px; overflow: hidden; }
+
+        .selection-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .god-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+
+        .god-btn {
+            background: var(--card-bg);
+            border: 1px solid #555;
+            color: white;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: capitalize;
+            transition: all 0.2s;
+        }
+        .god-btn:hover { background: #444; }
+        .god-btn.active { background: var(--accent-color); color: black; font-weight: bold; border-color: var(--accent-color); }
+        
+        .god-btn.special-tab { border-color: var(--rare-color); color: var(--rare-color); }
+        .god-btn.special-tab.active { background: var(--rare-color); color: #000; }
+
+        .boon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .boon-card {
+            background: var(--card-bg);
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        /* ETAT VEROUILLÉ / NON DISPONIBLE */
+        .boon-card.locked {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+            cursor: not-allowed;
+            border-style: dashed;
+        }
+        .boon-card.locked:hover {
+            transform: none;
+            border-color: #444;
+        }
+
+        .boon-card:not(.locked):hover { border-color: var(--accent-color); transform: translateY(-2px); }
+        
+        /* STYLE LEGENDAIRE & DUO */
+        .boon-card.legendary { border: 1px solid var(--legendary-color); box-shadow: 0 0 5px rgba(255, 157, 0, 0.1); }
+        .boon-card.legendary .boon-name { color: var(--legendary-color); }
+
+        .boon-card.duo { border: 1px solid var(--duo-color); box-shadow: 0 0 5px rgba(204, 255, 0, 0.1); }
+        .boon-card.duo .boon-name { color: var(--duo-color); }
+
+        .boon-card img { width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-bottom: 8px; background: #000; }
+        .boon-name { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; }
+        .boon-type { font-size: 0.75em; color: #aaa; margin-bottom: 5px; }
+        .boon-desc { font-size: 0.7em; color: #888; margin-top: 5px; display: none; }
+        .boon-card:hover .boon-desc { display: block; }
+
+        /* Liste des prérequis */
+        .prereq-list {
+            font-size: 0.7em;
+            margin-top: 5px;
+            width: 100%;
+            text-align: left;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        .prereq-item { display: block; }
+        .prereq-item.missing { color: var(--danger-color); }
+        .prereq-item.met { color: var(--success-color); }
+        .prereq-item::before { content: "• "; }
+
+
+        /* --- BUILD AREA --- */
+        .build-area {
+            flex: 1;
+            background: #111;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .build-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333;
+        }
+        
+        .counter.full { color: var(--danger-color); }
+
+        .selected-list { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .selected-item {
+            display: flex; align-items: center; background: #2d2d2d; padding: 8px;
+            border-radius: 4px; border-left: 4px solid var(--accent-color); cursor: pointer;
+        }
+        
+        .selected-item.legendary { border-left-color: var(--legendary-color) !important; background: #3a2a1a; }
+        .selected-item.legendary div div:first-child { color: var(--legendary-color); }
+
+        .selected-item.duo { border-left-color: var(--duo-color) !important; background: #2a2f1a; }
+        .selected-item.duo div div:first-child { color: var(--duo-color); }
+
+        .selected-item:hover { background: #3d3333; border-left-color: var(--danger-color) !important; }
+        .selected-item img { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; }
+
+        #loader {
+            position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9);
+            color: white; display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        
+        .back-home {
+            position: absolute; top: 10px; left: 20px; color: #888;
+            text-decoration: none; font-size: 0.9em; z-index: 100;
+        }
+        .back-home:hover { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <a href="accueil.html" class="back-home">&larr; Retour à l'accueil</a>
+    <div id="loader">Chargement des données...</div>
+
+    <header>
+        <h1>Planificateur de Build</h1>
+    </header>
+
+    <div class="weapon-section">
+        <div class="weapon-controls">
+            <label for="weaponTypeSelect">Type d'Arme :</label>
+            <select id="weaponTypeSelect">
+                <option value="">-- Choisir un type --</option>
+            </select>
+            <span style="font-size:0.9em; color:#888;"> ← Choisissez le type pour voir les aspects</span>
+        </div>
+        
+        <div class="aspect-selection-grid" id="aspectGrid"></div>
+    </div>
+
+    <div class="container">
+        <div class="selection-area">
+            <div class="god-tabs" id="godTabs"></div>
+            <div class="boon-grid" id="boonGrid">
+                <p style="padding:20px; color:#777;">Sélectionnez une catégorie.</p>
+            </div>
+        </div>
+
+        <div class="build-area">
+            <div class="build-header">
+                <h2>Mon Build</h2>
+                <span class="counter" id="counter">0 / 22</span>
+            </div>
+            <div class="selected-list" id="buildList">
+                <div style="font-style:italic; color:#555; text-align:center; margin-top:20px;">
+                    Aucun élément sélectionné.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gods = ['aphrodite', 'ares', 'artemis', 'athena', 'demeter', 'dionysos', 'poseidon', 'hermes', 'zeus', 'duo'];
+        const MAX_BOONS = 22;
+        const MAX_HAMMERS = 2;
+        const baseUrl = "https://raw.githubusercontent.com/FlorianQNT/projet_web_polytech_4A/main/images/";
+
+        // Liste des types principaux qui sont limités à 1 par build
+        const RESTRICTED_TYPES = ['Attaque', 'Technique', 'Lancer', 'Elan', 'Appel'];
+
+        let dataStore = {
+            gods: {},
+            aspects: [], 
+            marteaux: []
+        };
+        let currentBuild = [];
+        let currentWeaponType = null;
+        let currentTabKey = gods[0]; // Mémorise l'onglet actif
+
+        const els = {
+            loader: document.getElementById('loader'),
+            typeSelect: document.getElementById('weaponTypeSelect'),
+            aspectGrid: document.getElementById('aspectGrid'),
+            godTabs: document.getElementById('godTabs'),
+            boonGrid: document.getElementById('boonGrid'),
+            buildList: document.getElementById('buildList'),
+            counter: document.getElementById('counter')
+        };
+		
+		function cleanText(text) {
+			if (!text) return "";
+			return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+		}
+
+        async function fetchAllData() {
+            try {
+                const godPromises = gods.map(god => 
+                    fetch(`api.php?categorie=${god}`).then(r => r.json()).then(d => ({ k: god, v: d }))
+                );
+                
+                const aspectPromise = fetch(`api.php?categorie=armes`).then(r => r.json());
+                const hammerPromise = fetch(`api.php?categorie=marteaux`).then(r => r.json());
+
+                const [godResults, allAspects, allHammers] = await Promise.all([
+                    Promise.all(godPromises),
+                    aspectPromise,
+                    hammerPromise
+                ]);
+
+                godResults.forEach(item => dataStore.gods[item.k] = item.v);
+                dataStore.aspects = allAspects;
+                dataStore.marteaux = allHammers;
+
+                initInterface();
+                els.loader.style.display = 'none';
+
+            } catch (e) {
+                console.error(e);
+                els.loader.innerText = "Erreur chargement (voir console)";
+            }
+        }
+
+        function initInterface() {
+            const uniqueTypes = [...new Set(dataStore.aspects.map(item => item.Type))];
+            
+            uniqueTypes.forEach(type => {
+                if(type) { 
+                    const opt = document.createElement('option');
+                    opt.value = type;
+                    opt.innerText = type;
+                    els.typeSelect.appendChild(opt);
+                }
+            });
+
+            els.typeSelect.addEventListener('change', (e) => onWeaponTypeChange(e.target.value));
+
+            createTabButton('marteaux', 'Marteaux', true); 
+            gods.forEach(god => createTabButton(god, god));
+            switchTab(gods[0]);
+        }
+
+        function createTabButton(key, label, isSpecial = false) {
+            const btn = document.createElement('button');
+            btn.className = `god-btn ${isSpecial ? 'special-tab' : ''}`;
+            btn.innerText = label;
+            btn.dataset.key = key;
+            if(isSpecial) btn.style.display = 'none'; 
+            btn.onclick = () => switchTab(key, btn);
+            els.godTabs.appendChild(btn);
+        }
+
+        function onWeaponTypeChange(type) {
+            currentWeaponType = type;
+            els.aspectGrid.innerHTML = '';
+            
+            // Réinitialiser le build si on change de type d'arme (optionnel, mais plus logique)
+            // Ici, je garde le build mais je filtre les aspects/marteaux invalides pourrait être complexe
+            // Pour l'instant, on laisse l'utilisateur gérer ses incohérences s'il change d'arme en cours de route,
+            // ou on peut clear les aspects/marteaux.
+            currentBuild = currentBuild.filter(b => b.sourceCategory !== 'Aspect' && b.sourceCategory !== 'Amélioration');
+
+            const hammerTab = document.querySelector('.god-btn[data-key="marteaux"]');
+            
+            if(!type) {
+                els.aspectGrid.classList.remove('visible');
+                if(hammerTab) hammerTab.style.display = 'none';
+                updateBuildUI(); // Rafraichir UI
+                return;
+            }
+
+            if(hammerTab) hammerTab.style.display = 'block';
+
+            const filteredAspects = dataStore.aspects.filter(a => a.Type === type);
+            els.aspectGrid.classList.add('visible');
+
+            filteredAspects.forEach(aspect => {
+                const card = document.createElement('div');
+                card.className = 'aspect-card';
+                
+                const img = aspect.Image ? `<img src="${baseUrl}${aspect.Image}" onerror="this.style.display='none'">` : '';
+                
+                card.innerHTML = `
+                    ${img}
+                    <div style="font-weight:bold; font-size:0.9em;">${aspect.Nom}</div>
+                    <div style="font-size:0.7em; color:#aaa;">${aspect.Type}</div>
+                `;
+
+                card.onclick = () => selectAspect(aspect, card);
+                els.aspectGrid.appendChild(card);
+            });
+            
+            // Re-render pour mettre à jour les disponibilités des marteaux
+            if(currentTabKey === 'marteaux') renderBoons('marteaux');
+            updateBuildUI();
+        }
+
+        function selectAspect(aspect, cardElement) {
+            currentBuild = currentBuild.filter(item => item.sourceCategory !== 'Aspect');
+            document.querySelectorAll('.aspect-card').forEach(c => c.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            const buildItem = { ...aspect, sourceCategory: 'Aspect' };
+            currentBuild.unshift(buildItem); 
+            updateBuildUI();
+        }
+
+        function switchTab(key, btn) {
+            currentTabKey = key;
+            document.querySelectorAll('.god-btn').forEach(b => b.classList.remove('active'));
+            if(!btn) btn = document.querySelector(`.god-btn[data-key="${key}"]`);
+            if(btn) btn.classList.add('active');
+            renderBoons(key);
+        }
+
+        /* -------------------------------------------------------------
+           FONCTION CLE : GESTION DES PREREQUIS ET RENDU
+        ------------------------------------------------------------- */
+        function renderBoons(key) {
+			els.boonGrid.innerHTML = '';
+			let items = [];
+
+			// --- 1. Récupération des données selon l'onglet ---
+			if (key === 'marteaux') {
+				if (!currentWeaponType) {
+					els.boonGrid.innerHTML = '<p>Veuillez choisir un type d\'arme ci-dessus.</p>';
+					return;
+				}
+				items = dataStore.marteaux.filter(m => m.Type === currentWeaponType);
+				if(items.length === 0) els.boonGrid.innerHTML = `<p>Aucun marteau trouvé pour ${currentWeaponType}.</p>`;
+			} else {
+				items = dataStore.gods[key] || [];
+			}
+
+			// --- 2. Création des cartes ---
+			items.forEach(item => {
+				const card = document.createElement('div');
+				card.className = 'boon-card';
+
+				let reqString = item.Prerequi || item.Prérequis || item.Prerequis || "";
+				let isLocked = false;
+				let reqHtml = "";
+
+				// Si des prérequis existent
+				if (reqString && reqString !== "Aucun" && reqString !== "None" && reqString !== "null") {
+					
+					// --- ETAPE A : PARSING INTELLIGENT ---
+					// On découpe d'abord par ';'. Le point-virgule sépare les blocs logiques distincts.
+					let rawBlocks = reqString.split(';');
+					let finalReqList = [];
+
+					rawBlocks.forEach(block => {
+						block = block.trim();
+						if(!block) return;
+
+						// CAS 1 : C'est une liste d'incompatibilités explicites
+						// Ex: "Incompatible avec A, B, C"
+						if (block.startsWith("Incompatible avec ")) {
+							// On enlève "Incompatible avec " pour récupérer "A, B, C"
+							let cleanBlock = block.replace("Incompatible avec ", "");
+							// On découpe par virgule
+							let subItems = cleanBlock.split(',');
+							
+							subItems.forEach(sub => {
+								// On marque CHAQUE élément comme étant une incompatibilité explicite
+								finalReqList.push({ name: sub.trim(), type: 'explicit_incompatible' });
+							});
+						} 
+						// CAS 2 : Prérequis standard ou incompatibilité implicite (Marteaux)
+						else {
+							let subItems = block.split(',');
+							subItems.forEach(sub => {
+								finalReqList.push({ name: sub.trim(), type: 'standard' });
+							});
+						}
+					});
+
+					// --- ETAPE B : VÉRIFICATION ET AFFICHAGE ---
+					if (finalReqList.length > 0) {
+						reqHtml += `<div class="prereq-list">`;
+						
+						let isBlocked = false;       // Devient true si une interdiction est violée
+						let hasPositiveReq = false;  // Devient true si on a un prérequis obligatoire (ex: Aspect)
+						let countPositiveReqs = 0;   // Compte le nombre d'obligations positives
+						
+						finalReqList.forEach(reqObj => {
+							let reqName = reqObj.name;
+							if(!reqName) return;
+
+							let isNegative = false;
+							let displayName = reqName;
+
+							// DÉTECTION DE LA NATURE DU PRÉREQUIS
+							// 1. Si c'était dans un bloc "Incompatible avec..."
+							if (reqObj.type === 'explicit_incompatible') {
+								isNegative = true;
+								displayName = "Non : " + reqName;
+							}
+							// 2. Si c'est un Marteau et que ce n'est pas un Aspect (Logique implicite Hades)
+							else if (key === 'marteaux' && !reqName.includes("Aspect")) {
+								isNegative = true;
+								displayName = "Incompatible : " + reqName;
+							}
+							
+							// VÉRIFICATION DANS LE BUILD ACTUEL (Insensible aux accents)
+							const hasItem = currentBuild.some(b => cleanText(b.Nom) === cleanText(reqName));
+							let statusClass = '';
+
+							if (isNegative) {
+								// C'est une INTERDICTION
+								if (hasItem) {
+									isBlocked = true;    // Aïe, on a l'objet interdit
+									statusClass = 'missing'; // Rouge
+								} else {
+									statusClass = 'met'; // Vert (on ne l'a pas, c'est bien)
+								}
+							} else {
+								// C'est une OBLIGATION (ex: Aspect X)
+								countPositiveReqs++;
+								if (hasItem) {
+									hasPositiveReq = true;
+									statusClass = 'met'; // Vert
+								} else {
+									statusClass = 'missing'; // Rouge
+								}
+							}
+
+							reqHtml += `<span class="prereq-item ${statusClass}">${displayName}</span>`;
+						});
+						
+						reqHtml += `</div>`;
+
+						// --- ETAPE C : DÉCISION FINALE (VERROUILLAGE) ---
+						
+						// 1. Priorité absolue aux interdictions
+						if (isBlocked) {
+							isLocked = true;
+						} 
+						// 2. Gestion des obligations positives (s'il y en a)
+						else if (countPositiveReqs > 0 && !hasPositiveReq) {
+							isLocked = true;
+						}
+					}
+				}
+
+				// --- 3. Application des classes CSS ---
+				if (isLocked) {
+					card.classList.add('locked');
+					card.title = "Verrouillé : Incompatibilité ou prérequis manquant";
+				}
+				
+				if (item.Rareté === 'Légendaire') card.classList.add('legendary');
+				if (key === 'duo') card.classList.add('duo');
+
+				const imgDisplay = item.Image ? `<img src="${baseUrl}${item.Image}" onerror="this.style.display='none'">` : '';
+
+				card.innerHTML = `
+					${imgDisplay}
+					<div class="boon-name">${item.Nom}</div>
+					<div class="boon-type">${item.Type || 'Passif'}</div>
+					${reqHtml}
+					<div class="boon-desc">${item.Description || ''}</div>
+				`;
+
+				card.onclick = () => {
+					if (isLocked) {
+						alert("Cet élément est verrouillé par vos choix actuels.");
+						return;
+					}
+					addToBuild(item, key === 'marteaux' ? 'Amélioration' : (key === 'duo' ? 'Duo' : key));
+				};
+				
+				els.boonGrid.appendChild(card);
+			});
+		}
+
+        function addToBuild(item, source) {
+            // Vérif Marteaux
+            if (source === 'Amélioration') {
+                const hammerCount = currentBuild.filter(b => b.sourceCategory === 'Amélioration').length;
+                if (hammerCount >= MAX_HAMMERS) {
+                    alert(`Maximum ${MAX_HAMMERS} Marteaux !`);
+                    return;
+                }
+            }
+
+            // Vérif Compteur Global (hors Aspect/Marteaux)
+            const countRelevant = currentBuild.filter(b => 
+                b.sourceCategory !== 'Aspect' && b.sourceCategory !== 'Amélioration'
+            ).length;
+            
+            if (countRelevant >= MAX_BOONS && source !== 'Amélioration' && source !== 'Aspect') {
+                alert("Build complet (Max 22 Bienfaits) !");
+                return;
+            }
+
+            // Vérif Doublon
+            if (currentBuild.some(b => b.Nom === item.Nom)) {
+                alert("Déjà possédé !");
+                return;
+            }
+
+            // Vérif Slot (Attaque, Technique...)
+            if (RESTRICTED_TYPES.includes(item.Type)) {
+                const existing = currentBuild.find(b => b.Type === item.Type);
+                if (existing) {
+                    alert(`Conflit : Vous avez déjà "${existing.Nom}" sur le slot [${item.Type}]. Retirez-le d'abord.`);
+                    return;
+                }
+            }
+
+            currentBuild.push({ ...item, sourceCategory: source });
+            updateBuildUI();
+        }
+
+        function removeFromBuild(index) {
+            const item = currentBuild[index];
+            currentBuild.splice(index, 1);
+            if(item.sourceCategory === 'Aspect') {
+                document.querySelectorAll('.aspect-card').forEach(c => c.classList.remove('selected'));
+            }
+            updateBuildUI();
+        }
+
+        function updateBuildUI() {
+            // Mise à jour compteur
+            const realCount = currentBuild.filter(b => 
+                b.sourceCategory !== 'Aspect' && b.sourceCategory !== 'Amélioration'
+            ).length;
+
+            els.counter.innerText = `${realCount} / ${MAX_BOONS}`;
+            els.counter.classList.toggle('full', realCount >= MAX_BOONS);
+            
+            els.buildList.innerHTML = '';
+            if (currentBuild.length === 0) {
+                els.buildList.innerHTML = '<div style="font-style:italic; color:#555; text-align:center; margin-top:20px;">Vide</div>';
+            } else {
+                currentBuild.forEach((item, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'selected-item';
+                    div.title = "Cliquez pour retirer";
+                    
+                    if (item.Rareté === 'Légendaire') div.classList.add('legendary');
+                    if (item.sourceCategory === 'Duo') div.classList.add('duo');
+
+                    const imgDisplay = item.Image ? `<img src="${baseUrl}${item.Image}" onerror="this.style.display='none'">` : '';
+                    
+                    if(item.sourceCategory === 'Aspect') div.style.borderLeftColor = '#ffffff'; 
+                    else if(item.sourceCategory === 'Amélioration') div.style.borderLeftColor = '#a3d1ff'; 
+
+                    div.innerHTML = `
+                        ${imgDisplay}
+                        <div>
+                            <div style="font-weight:bold;">${item.Nom}</div>
+                            <div style="font-size:0.8em; color:#aaa;">${item.sourceCategory} ${item.Type ? '- ' + item.Type : ''}</div>
+                        </div>
+                    `;
+                    div.onclick = () => removeFromBuild(idx);
+                    els.buildList.appendChild(div);
+                });
+            }
+
+            // IMPORTANT : Rafraichir la grille des bienfaits pour mettre à jour les verrous (Prérequis)
+            // On ne rafraichit que si on est sur un onglet qui a des prérequis (tout sauf marteaux de base, mais marteaux aussi parfois)
+            renderBoons(currentTabKey);
+        }
+
+        fetchAllData();
+    </script>
+</body>
+</html>
