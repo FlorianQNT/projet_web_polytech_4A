@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codex des Enfers - Accueil</title>
+    <style>
+        /* --- RESET ET BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo-img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #e74c3c; }
+        .nav-links a.active { color: #e74c3c; border-bottom: 2px solid #e74c3c; }
+
+        /* --- HERO HEADER --- */
+        header.hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #2c0b0b 0%, #000000 100%);
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #e74c3c;
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 40px;
+            color: #ccc;
+        }
+
+        .cta-button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            border: 2px solid #c0392b;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .cta-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
+        }
+
+        /* --- FEATURES --- */
+        .features {
+            padding: 60px 20px;
+            max-width: 1400px; /* Élargi pour laisser de la place aux 4 cartes */
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            color: #d4af37;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        /* --- MODIFICATION ICI POUR L'ALIGNEMENT --- */
+        .cards-container {
+            display: grid;
+            /* Force 4 colonnes de taille égale */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 20px;
+        }
+
+        /* Règle Responsive : Sur tablette/mobile, on revient à l'affichage empilé
+           pour éviter que les cartes soient minuscules */
+        @media (max-width: 1024px) {
+            .cards-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        .card {
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;          /* Ajout flex pour aligner le contenu */
+            flex-direction: column; /* Verticalement */
+            justify-content: space-between; /* Espace équilibré */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+        }
+
+        .card-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .card h3 { font-size: 1.3rem; margin-bottom: 15px; color: #fff; } /* Légèrement plus petit pour tout faire tenir */
+        .card p { color: #aaa; font-size: 0.95rem; }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #000;
+            color: #666;
+            margin-top: 50px;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <img src="Hades_symbol_II.webp" alt="Logo" class="nav-logo-img">
+            Codex Stygien
+        </div>
+        <div class="nav-links">
+            <a href="accueil.html" class="active">Accueil</a>
+            <a href="codex.html">Le Codex</a>
+            <a href="build.html">Builder</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Le Codex</h1>
+        <p>Retrouvez tous les boons des Dieux, les aspects des armes, les marteaux pour chaque arme et talents du mirroir en français.</p>
+        <a href="codex.html" class="cta-button">Ouvrir le Codex</a>
+    </header>
+
+    <section class="features">
+        <h2 class="section-title">Contenu du Codex</h2>
+        <div class="cards-container">
+            <div class="card">
+                <div>
+                    <span class="card-icon">⚡</span>
+                    <h3>Les Olympiens</h3>
+                    <p>Consultez la liste complète des bienfaits offerts par les Dieux de l'Olympe.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div>
+                    <span class="card-icon">⚔️</span>
+                    <h3>Armes Infernales</h3>
+                    <p>Détails sur les 6 armes et les améliorations des Marteaux de Dédale.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div>
+                    <span class="card-icon">🪞</span>
+                    <h3>Le Miroir</h3>
+                    <p>Talents du Mirroir de la nuit que ce soit du côté principale comme caché.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div>
+                    <span class="card-icon">🔨</span>
+                    <h3>Planificateur</h3>
+                    <p>Créez votre build en combinant aspects d'armes et bienfaits.</p>
+                </div>
+                <div style="margin-top: 15px;">
+                    <a href="build.html" style="color:#e74c3c; font-weight:bold;">Créer un build &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <button onclick="alert('Florian QUINT: florian.quint@etud.univ-angers.fr\nFlorian LE RUYET: florian.leruyet@etud.univ-angers.fr')"
+        style="background-color: #000; color: #fff; border: 1px solid #fff; padding: 10px 20px; cursor: pointer;">
+            Nous contacter
+        </button> 
+    </footer>
+
+</body>
+</html>
