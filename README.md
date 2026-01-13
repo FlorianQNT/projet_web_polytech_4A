@@ -4,7 +4,7 @@
 L'IA a été utilisé pour un premier jet de mise en page (modifier par la suite) ainsi que pour aider lors des requetes SQL pour les pages "Build" et "Codex" à cause de la complexité des pages.
 
 ## Membres:
--Florian QUINT(programmation)<br>
+-Florian QUINT(base de donnée et programmation)<br>
 -Florian LE RUYET(base de donnée et correction visuel)<br>
 
 ## Description du projet:
