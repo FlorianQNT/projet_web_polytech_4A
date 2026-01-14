@@ -26,3 +26,4 @@ Toutes les informations consultables dans les pages Codex et Build se trouvent d
 Il n'y a pas de lien car tout est en local.<br>
 
 ## Bug Connu:
+Lors de la sélection d'un boon, si ce dernier est utilisable dans un duo, le duo est prenable alors qu'il manque le deuxième boon
