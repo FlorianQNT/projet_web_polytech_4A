@@ -21,9 +21,12 @@ Toutes les informations consultables dans les pages Codex et Build se trouvent d
 - CSS
 - JavaScript
 - MySQL (MariaDB)
+- NodeJS
 
 ## Lien
 Il n'y a pas de lien car tout est en local.<br>
 
 ## Bug Connu:
-Lors de la sélection d'un boon, si ce dernier est utilisable dans un duo, le duo est prenable alors qu'il manque le deuxième boon
+Lors de la sélection d'un boon, si ce dernier est utilisable dans un duo, le duo est prenable alors qu'il manque le deuxième boon<br>
+Dans la page Codex, la taille des colonnes est impactée par la quantité de texte présente dans la colonne "Prérequis"
+
