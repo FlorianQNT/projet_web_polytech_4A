@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Codex Stygien - Codex</title>
+    <style>
+        body{background:#1a1a1a;color:#f0f0f0;font-family:sans-serif;padding:20px}
+        .header-container, .search-box, #message{text-align:center;margin-bottom:20px}
+        .site-logo{height:60px;vertical-align:middle;margin-right:15px}
+        h1{color:#e74c3c;display:inline-block;vertical-align:middle;margin:0}
+        .back-link{color:#999;text-decoration:none;font-size:.9rem;margin-right:20px;transition:.2s}
+        .back-link:hover{color:#fff;text-decoration:underline}
+        .search-box{background:#333;padding:20px;border-radius:10px;margin-bottom:30px}
+        select, button{padding:10px;font-size:16px;border-radius:5px;border:none}
+        button{background-color:#e74c3c;color:#fff;cursor:pointer;margin-left:10px}
+        button:hover{background-color:#c0392b}
+        table{width:100%;border-collapse:collapse;margin-top:20px;background:#2c2c2c}
+        th, td{padding:15px;text-align:left;border-bottom:1px solid #444}
+        th{background:#e74c3c;color:#fff;text-transform:capitalize}
+        tr:hover{background:#3a3a3a}
+        .table-img{width:64px;height:64px;object-fit:contain;background:#000;border-radius:5px}
+        #message{color:orange;font-size:1.2rem}
+    </style>
+</head>
+<body>
+    <div class="nav-top">
+        <a href="accueil.html" class="back-link">&larr; Retour à l'accueil</a>
+        <a href="build.html" class="back-link">Aller au Planificateur &rarr;</a>
+    </div>
+    <div class="header-container">
+        <h1><img src="https://raw.githubusercontent.com/FlorianQNT/projet_web_polytech_4A/main/images/Hades_symbol_II.webp" alt="Logo" class="site-logo">Le Codex</h1>
+    </div>
+    <div class="search-box">
+        <label>Que voulez-vous consulter ?</label>
+        <select id="catSelect">
+            <option value="" disabled selected>-- Choisissez une catégorie --</option>
+            <optgroup label="Équipement">
+                <option value="armes">Les Armes Infernales</option>
+                <option value="marteaux">Marteaux de Dédale</option>
+                <option value="miroir_total">Miroir de la Nuit</option>
+            </optgroup>
+            <optgroup label="Bienfaits des Dieux">
+                <option value="aphrodite">Aphrodite</option><option value="ares">Arès</option>
+                <option value="artemis">Artémis</option><option value="athena">Athéna</option>
+                <option value="demeter">Demeter</option><option value="dionysos">Dionysos</option>
+                <option value="hermes">Hermès</option><option value="poseidon">Poséidon</option>
+                <option value="zeus">Zeus</option><option value="duo">Duo Boons</option>
+            </optgroup>
+        </select>
+        <select id="armeSelect" style="display:none;margin-left:10px">
+            <option value="">-- Toutes les armes --</option>
+            <option value="Epée">Épée</option><option value="Lance">Lance</option>
+            <option value="Bouclier">Bouclier</option><option value="Arc">Arc</option>
+            <option value="Poings">Poings</option><option value="Canon">Canon</option>
+        </select>
+        <button id="btnSearch">Afficher</button>
+    </div>
+    <div id="tableContainer"></div>
+    <p id="message"></p>
+
+    <script>
+        const qs = (id) => document.getElementById(id);
+        const [catSel, armeSel, btn, box, msg] = [qs('catSelect'), qs('armeSelect'), qs('btnSearch'), qs('tableContainer'), qs('message')];
+        
+        // --- MISE A JOUR URL IMAGES ---
+        const baseUrl = "https://raw.githubusercontent.com/FlorianQNT/projet_web_polytech_4A/main/images/";
+
+        catSel.addEventListener('change', e => {
+            armeSel.style.display = e.target.value === 'marteaux' ? 'inline-block' : 'none';
+            if(e.target.value !== 'marteaux') armeSel.value = "";
+        });
+
+        btn.addEventListener('click', () => {
+            const cat = catSel.value;
+            if (!cat) return msg.textContent = "Veuillez choisir une catégorie.";
+            
+            box.innerHTML = ''; msg.textContent = 'Chargement...';
+            
+            // --- MISE A JOUR APPEL API (vers /api) ---
+            let url = `/api?categorie=${cat}` + (cat === 'marteaux' && armeSel.value ? `&type=${armeSel.value}` : '');
+
+            fetch(url).then(r => r.json()).then(data => {
+                msg.textContent = '';
+                if (data.error || !Array.isArray(data) || data.length === 0) return msg.textContent = data.error || "Aucune donnée trouvée.";
+
+                let keys = Object.keys(data[0]);
+                const imgIdx = keys.findIndex(k => k.toLowerCase() === 'image');
+                if (imgIdx > -1) keys.unshift(keys.splice(imgIdx, 1)[0]);
+
+                let html = `<table><thead><tr>${keys.map(k => `<th>${k.toLowerCase() === 'image' ? 'Icône' : k}</th>`).join('')}</tr></thead><tbody>`;
+                
+                html += data.map(row => `<tr>${keys.map(key => {
+                    let val = row[key];
+                    let kLow = key.toLowerCase();
+                    
+                    if (kLow === 'image' && val) 
+                        return `<td><img src="${baseUrl}${val}" class="table-img" onerror="this.style.display='none'"></td>`;
+                    
+                    if ((kLow.includes('prerequi') || kLow.includes('prérequi')) && val) {
+                        let fmt = val.toString();
+                        if (cat === 'duo') fmt = fmt.split(';').filter(i => i.trim().toLowerCase() !== 'aucun').join('<br>');
+                        else fmt = fmt.replace(/;/g, '<br>');
+                        return `<td style="white-space:nowrap;">${fmt}</td>`;
+                    }
+                    return `<td>${val ?? ''}</td>`;
+                }).join('')}</tr>`).join('');
+
+                box.innerHTML = html + '</tbody></table>';
+            }).catch(e => { console.error(e); msg.textContent = "Erreur serveur."; });
+        });
+    </script>
+</body>
+</html>
