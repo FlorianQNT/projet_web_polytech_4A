@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créateur de Build - Hades</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="nav-top">
+        <a href="accueil.html" class="back-link">&larr; Retour à l'accueil</a>
+        <a href="codex.html" class="back-link">&emsp;	Aller au Codex &rarr;</a>
+    </div>
+    <div id="loader">Chargement des données...</div>
+
+    <header>
+        <h1>Planificateur de Build</h1>
+    </header>
+
+    <div class="weapon-section">
+        <div class="weapon-controls">
+            <label for="weaponTypeSelect">Type d'Arme :</label>
+            <select id="weaponTypeSelect">
+                <option value="">-- Choisir un type --</option>
+            </select>
+            
+            <div style="border-left: 1px solid #444; padding-left: 20px; margin-left: 20px;">
+                <label for="soulSelect" style="color: #a67aff;">Talent (Lancer) :</label>
+                <select id="soulSelect">
+                    <option value="">-- Choisir --</option>
+                    <option value="Ame Infernale">Âme Infernale (3 Munitions)</option>
+                    <option value="Ame Stygienne">Âme Stygienne (Régénération)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="aspect-selection-grid" id="aspectGrid"></div>
+    </div>
+
+    <div class="container">
+        <div class="selection-area">
+            <div class="god-tabs" id="godTabs"></div>
+            <div class="boon-grid" id="boonGrid">
+                <p style="padding:20px; color:#777;">Sélectionnez une catégorie.</p>
+            </div>
+        </div>
+
+        <div class="build-area">
+            <div class="build-header">
+                <h2>Mon Build</h2>
+                <span class="counter" id="counter">0 / 22</span>
+            </div>
+            <div class="selected-list" id="buildList">
+                <div style="font-style:italic; color:#555; text-align:center; margin-top:20px;">
+                    Aucun élément sélectionné.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="logic.js" defer></script>
+</body>
+</html>
