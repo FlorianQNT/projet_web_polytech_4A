@@ -1,7 +1,7 @@
 # projet web polytech 4A: Le Codex Stygien
 
 ## Disclaimer
-L'IA a été utilisé pour un premier jet de mise en page (modifier par la suite) ainsi que pour aider lors des requetes SQL pour les pages "Build" et "Codex" à cause de la complexité des pages.
+L'IA a été utilisé pour un premier jet de mise en page (modifier par la suite) ainsi que pour aider lors des requetes SQL pour les pages "Build" et "Codex" à cause de la complexité des requètes SQL pour l'affichage.
 
 ## Membres:
 -Florian QUINT(base de donnée et programmation)<br>
