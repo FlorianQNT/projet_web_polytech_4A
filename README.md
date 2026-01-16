@@ -5,7 +5,7 @@ L'IA a été utilisé pour un premier jet de mise en page (modifier par la suite
 
 ## Membres:
 -Florian QUINT(base de donnée et programmation)<br>
--Florian LE RUYET(base de donnée et correction visuel)<br>
+-Florian LE RUYET(base de donnée et visuel)<br>
 
 ## Description du projet:
 Ce site permet aux joueurs du jeu Hades d'avoir un endroit pour consulté tous les boons des dieux, marteaux, armes, talents du mirroir avec leurs spécificité le tout en français.<br>
